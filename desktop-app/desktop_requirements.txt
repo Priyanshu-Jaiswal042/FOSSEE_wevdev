@@ -1,0 +1,14 @@
+# GUI Framework
+PyQt5==5.15.10
+
+# Plotting and Visualization
+matplotlib==3.8.2
+
+# Data Processing
+pandas==2.1.3
+
+# HTTP Requests
+requests==2.31.0
+
+# Numerical Operations
+numpy==1.26.2
