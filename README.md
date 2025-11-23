@@ -1,5 +1,7 @@
 # Quick Start Guide
 
+Code: is partially working and the website is not deployable yet
+
 Get the Chemical Equipment Parameter Visualizer up and running in 10 minutes!
 
 ## ⚡ Prerequisites Check
