@@ -1,0 +1,204 @@
+#!/bin/bash
+
+# Chemical Equipment Visualizer - Automated Setup Script
+# This script sets up the entire project structure and dependencies
+
+echo "🚀 Chemical Equipment Visualizer Setup"
+echo "======================================="
+echo ""
+
+# Colors for output
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+NC='\033[0m' # No Color
+
+# Check prerequisites
+echo "Checking prerequisites..."
+
+# Check Python
+if ! command -v python3 &> /dev/null; then
+    echo -e "${RED}❌ Python 3 is not installed${NC}"
+    echo "Please install Python 3.8+ from https://www.python.org/"
+    exit 1
+fi
+echo -e "${GREEN}✅ Python found:${NC} $(python3 --version)"
+
+# Check Node.js
+if ! command -v node &> /dev/null; then
+    echo -e "${RED}❌ Node.js is not installed${NC}"
+    echo "Please install Node.js from https://nodejs.org/"
+    exit 1
+fi
+echo -e "${GREEN}✅ Node.js found:${NC} $(node --version)"
+
+# Check npm
+if ! command -v npm &> /dev/null; then
+    echo -e "${RED}❌ npm is not installed${NC}"
+    exit 1
+fi
+echo -e "${GREEN}✅ npm found:${NC} $(npm --version)"
+
+echo ""
+echo "📁 Creating project structure..."
+
+# Create main directories
+mkdir -p backend/chemical_equipment_viz
+mkdir -p backend/api
+mkdir -p frontend-web/src
+mkdir -p frontend-web/public
+mkdir -p desktop-app
+
+echo -e "${GREEN}✅ Directory structure created${NC}"
+echo ""
+
+# Backend setup
+echo "🐍 Setting up Django backend..."
+cd backend
+
+# Create virtual environment
+echo "Creating virtual environment..."
+python3 -m venv venv
+
+# Activate virtual environment
+if [[ "$OSTYPE" == "msys" || "$OSTYPE" == "win32" ]]; then
+    source venv/Scripts/activate
+else
+    source venv/bin/activate
+fi
+
+echo "Installing backend dependencies..."
+pip install --upgrade pip
+pip install Django==4.2.7
+pip install djangorestframework==3.14.0
+pip install django-cors-headers==4.3.1
+pip install pandas==2.1.3
+pip install numpy==1.26.2
+pip install reportlab==4.0.7
+
+# Create Django project if manage.py doesn't exist
+if [ ! -f "manage.py" ]; then
+    echo "Creating Django project..."
+    django-admin startproject chemical_equipment_viz .
+    python manage.py startapp api
+fi
+
+# Run migrations
+echo "Running database migrations..."
+python manage.py makemigrations
+python manage.py migrate
+
+echo -e "${GREEN}✅ Backend setup complete${NC}"
+echo ""
+
+# Frontend setup
+echo "⚛️  Setting up React frontend..."
+cd ../frontend-web
+
+# Check if package.json exists
+if [ ! -f "package.json" ]; then
+    echo "Initializing React app..."
+    npx create-react-app . --template minimal
+fi
+
+echo "Installing frontend dependencies..."
+npm install
+npm install axios chart.js react-chartjs-2
+
+echo -e "${GREEN}✅ Frontend setup complete${NC}"
+echo ""
+
+# Desktop app setup
+echo "🖥️  Setting up Desktop app..."
+cd ../desktop-app
+
+# Create virtual environment for desktop app
+python3 -m venv venv
+
+# Activate virtual environment
+if [[ "$OSTYPE" == "msys" || "$OSTYPE" == "win32" ]]; then
+    source venv/Scripts/activate
+else
+    source venv/bin/activate
+fi
+
+echo "Installing desktop app dependencies..."
+pip install --upgrade pip
+pip install PyQt5==5.15.10
+pip install matplotlib==3.8.2
+pip install pandas==2.1.3
+pip install requests==2.31.0
+
+echo -e "${GREEN}✅ Desktop app setup complete${NC}"
+echo ""
+
+cd ..
+
+# Create sample data if it doesn't exist
+if [ ! -f "sample_equipment_data.csv" ]; then
+    echo "Creating sample data..."
+    cat > sample_equipment_data.csv << 'EOF'
+Equipment Name,Type,Flowrate,Pressure,Temperature
+Pump-101,Pump,150.5,45.2,85.3
+Reactor-201,Reactor,200.0,120.5,450.0
+Heat Exchanger-301,Heat Exchanger,180.0,35.8,120.0
+Compressor-401,Compressor,95.0,200.0,180.5
+Distillation Column-501,Column,250.0,15.5,95.0
+Pump-102,Pump,145.0,42.0,82.0
+Reactor-202,Reactor,210.5,125.0,465.0
+Heat Exchanger-302,Heat Exchanger,175.0,38.0,115.0
+Compressor-402,Compressor,100.0,210.0,190.0
+Distillation Column-502,Column,245.0,18.0,98.0
+EOF
+    echo -e "${GREEN}✅ Sample data created${NC}"
+fi
+
+echo ""
+echo "=========================================="
+echo -e "${GREEN}🎉 Setup Complete!${NC}"
+echo "=========================================="
+echo ""
+echo "📝 Next Steps:"
+echo ""
+echo "1️⃣  Start Backend (Terminal 1):"
+echo "   cd backend"
+if [[ "$OSTYPE" == "msys" || "$OSTYPE" == "win32" ]]; then
+    echo "   .\\venv\\Scripts\\activate"
+else
+    echo "   source venv/bin/activate"
+fi
+echo "   python manage.py createsuperuser  # Create admin account"
+echo "   python manage.py runserver"
+echo ""
+echo "2️⃣  Start Frontend (Terminal 2):"
+echo "   cd frontend-web"
+echo "   npm start"
+echo ""
+echo "3️⃣  Start Desktop App (Terminal 3 - Optional):"
+echo "   cd desktop-app"
+if [[ "$OSTYPE" == "msys" || "$OSTYPE" == "win32" ]]; then
+    echo "   .\\venv\\Scripts\\activate"
+else
+    echo "   source venv/bin/activate"
+fi
+echo "   python main.py"
+echo ""
+echo "🌐 Access URLs:"
+echo "   Backend API: http://localhost:8000"
+echo "   Web App: http://localhost:3000"
+echo "   Admin Panel: http://localhost:8000/admin"
+echo ""
+echo "📊 Test with: sample_equipment_data.csv"
+echo ""
+echo -e "${YELLOW}⚠️  Important:${NC}"
+echo "   - Make sure to copy all the source files (.py, .jsx, .css)"
+echo "   - Update settings.py with the provided configuration"
+echo "   - Update API URLs if deploying to production"
+echo ""
+echo "📚 Documentation:"
+echo "   - README.md - Full documentation"
+echo "   - QUICKSTART.md - Quick start guide"
+echo "   - VSCODE_SETUP.md - VS Code setup"
+echo "   - DEPLOYMENT.md - Deployment guide"
+echo ""
+echo "Happy coding! 🚀"

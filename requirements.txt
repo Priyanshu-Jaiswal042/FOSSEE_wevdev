@@ -1,0 +1,29 @@
+# Core Django Framework
+Django==4.2.7
+
+# Django REST Framework for API
+djangorestframework==3.14.0
+
+# CORS Headers for cross-origin requests
+django-cors-headers==4.3.1
+
+# Data Processing Libraries
+pandas==2.1.3
+numpy==1.26.2
+
+# PDF Generation
+reportlab==4.0.7
+
+# Production Server
+gunicorn==21.2.0
+
+# Static Files Management
+whitenoise==6.6.0
+
+# Additional useful packages (optional but recommended)
+python-decouple==3.8
+Pillow==10.1.0
+
+# For production deployment (optional)
+dj-database-url==2.1.0
+psycopg2-binary==2.9.9
